@@ -6,8 +6,8 @@
 
   <style>
 body {
+  position: relative; /* Add this line */
   margin: 0;
-  background-color: black;
   overflow: hidden;
   font-family: sans-serif;
   color: white;
@@ -18,6 +18,8 @@ body {
 }
 
 canvas {
+  position: relative;
+  z-index: 0; /* Make sure it's higher than video */
   display: block;
 }
 
@@ -28,13 +30,19 @@ nav {
   left: 0;
   width: 100%;
   height: 60px;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 20px;
   box-sizing: border-box;
   z-index: 2;
+}
+.file-input {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* optional: centers vertically too */
+  align-self: center;
 }
 
 .nav-section {
@@ -59,11 +67,6 @@ nav {
   cursor: pointer;
 }
 
-#fileInput {
-  position: absolute;
-  top: 20px;
-  z-index: 1;
-}
 
 h1 {
       color: white; /* Make sure the h1 text is visible */
@@ -105,7 +108,7 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: black;
+  /*color: black;*/
 }
 
 .lightbox-header .left {
@@ -122,8 +125,23 @@ h1 {
   display: flex;
   padding: 30px;
   color: white;
+  justify-content: space-between;
+  gap: 30px;
+}
+/* Each column */
+.lightbox-grid .column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* Slider styling */
+.lightbox-grid input[type="range"] {
+  width: 100%;
+  max-width: 200px;
+  margin-top: 10px;
+}
 .lightbox-grid .nav-section {
   flex: 1;
   padding: 0 20px;
@@ -172,9 +190,6 @@ h1 {
     height: 50px;
   }
 
-  #fileInput {
-    top: 15px;
-  }
 }
 
 /* Larger Desktop Specific Styles */
@@ -213,6 +228,9 @@ h1 {
 </head>
 <body>
 
+    <video id="bgVideo" autoplay muted loop playsinline style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0;"></video>
+
+
 
 
     <nav>
@@ -239,6 +257,8 @@ h1 {
       <div class="lightbox-header nav-section center">
         
         <input type="file" id="fileInput" accept="audio/*" />
+        <input type="file" id="videoInput" accept="video/*" style="margin-left: 10px;" />
+
 
         
 
@@ -250,8 +270,24 @@ h1 {
   
     <!-- Lightbox Content with 3-column layout -->
     <div class="lightbox-grid">
+        <div class="column">
+            <label for="slider1">Slider 1</label>
+            <input type="range" id="slider1" min="0" max="100" value="50" />
+          </div>
+          <div class="column">
+            <label for="slider2">Slider 2</label>
+            <input type="range" id="slider2" min="0" max="100" value="50" />
+          </div>
+          <div class="column">
+            <label for="slider3">Slider 3</label>
+            <input type="range" id="slider3" min="0" max="100" value="50" />
+          </div>
+          
+      </div>
       
-    </div>
+
+
+
   </div>
   
 
@@ -399,6 +435,22 @@ h1 {
         if (e.target.files[0]) setupAudio(e.target.files[0]);
       });
 
+    const bgVideo = document.getElementById('bgVideo');
+    const videoInput = document.getElementById('videoInput');
+
+    videoInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const url = URL.createObjectURL(file);
+        bgVideo.src = url;
+        bgVideo.load();
+        bgVideo.play();
+    }
+    });
+
+
+
+
 
 
 
@@ -420,3 +472,6 @@ h1 {
   </script>
 </body>
 </html>
+
+
+
